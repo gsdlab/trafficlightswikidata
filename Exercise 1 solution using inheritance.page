@@ -1,0 +1,28 @@
+```clafer
+abstract Lamp
+    xor shape
+        ball
+        square
+        diamond
+
+TrafficLightSystem
+    Lamps
+        Red : Lamp
+            [ no diamond ]
+        Yellow : Lamp
+            [ no square ]
+        Green : Lamp
+            [ ball ]
+    allBalls ?
+        [ all l : Lamp | l.shape.ball ]
+    xor orientation
+        vertical
+            [ allBalls ]
+        horizontal
+            [ Red.shape.square && Yellow.shape.diamond ]    
+```
+
+```{.clafer .config}
+```
+
+> Back to [country specific features](country specific features#conclusion-of-part-i)

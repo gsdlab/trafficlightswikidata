@@ -1,0 +1,49 @@
+Let's finally model the various jurisdictions.
+We would like to specify that certain properties of the traffic light system are required or prohibited in a given country or continent. 
+To model specific choices of a jurisdiction we use clafer nesting (existence of a child clafer implies existence of the parent) as well as clafer and group cardinalities. 
+
+
+```clafer
+xor Jurisdiction
+    Europe 
+        UK ?    
+    mux NorthAmerica
+        USA
+        Canada
+    Australia
+    NewZealand
+```
+
+First, we use `xor` to allow exactly one of `Europe`, `NorthAmerica`, `Australia`, and `NewZealand`. 
+Since certain properties are specific to `UK` we can single it out as a child of `Europe`. 
+This way, all properties relevant to `Europe` will also hold since an instance of `Europe` must exist for an instance of `UK` to exist. 
+We use `mux` (meaning `0..1`) for `NorthAmerica` since we might choose a specific country (`USA` or `Canada`) or remain unspecific and only choose `NorthAmerica`.
+
+How many choices for a jurisdiction does our model allow? 
+Are they what you would expect? 
+
+Is it possible to have an instance as follows? Why?
+
+```
+Jurisdiction
+    Europe
+        UK
+    NorthAmerica
+```
+
+Let's use the ClaferConfigurator to generate all instances.
+
+Why do you sometimes see two green ticks ![green tick](/tick.png) in a single column?
+
+```{.clafer .config}
+```
+
+Close the Configurator and move to the page ![next](/next.png) [linking the jurisdiction and the system]().
+
+<hr>
+**Previous**
+<hr>
+
+1. [minimal traffic lights]()
+2. [adding variability]()
+3. [grouping choices]()

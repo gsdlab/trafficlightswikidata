@@ -1,0 +1,117 @@
+Let's consider a few more jurisdiction-specific features.
+
+1. In Europe, the light sequence from red to green is red->red+yellow->green; whereas, in North America, it is red->green.
+2. In USA, flashing red lights in all directions are used to indicate an all-way stop.
+3. In USA, all flashing yellow lights, which indicate danger and are used typically at night or in low traffic, are prohibited.
+4. In Canada, flashing green light indicates right of way for the left turn and it is equivalent of the green left arrow.
+5. Sometimes, the traffic lights are oriented vertically but sometimes horizontally (e.g., in Quebec in Canada).
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    countdownTimer ?
+        [ no USA ]
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+    allWayYellow ?
+        [ no USA ]
+    or advancedOrExtendedLeft ?   
+        greenFlashing
+        leftArrow
+            [ LeftGreenArrow ]   // C1
+    xor mountLocation 
+        inFront
+        behind
+    xor orientation
+        vertical
+        horizontal
+```
+
+The constraint `C1` means that is `leftArrow` is to be used for indicating advanced or extended left, then `LeftGreenArrow` lamp type must be supported. 
+It is the typical `requires` constraint, whereby one feature depends another.
+
+```clafer
+[ Europe => LeftGreenArrow && RightGreenArrow ]
+[ Europe => redAndYellowToGreen ]
+[ USA => allWayFlashingRedAsStop ]
+[ Canada => advancedOrExtendedLeft ]
+
+[ Europe => inFront ]
+[ NorthAmerica => behind ]
+
+[ Quebec => horizontal ]
+```
+
+```clafer
+xor Jurisdiction
+    Europe 
+        UK ?
+    mux NorthAmerica
+        USA
+        Canada
+            Quebec ?
+    Australia
+    NewZealand
+```
+
+Let's instantiate such model using the configurator.
+How many instances do you think are possible?
+
+Explore the possible instances per jurisdiction---this will give you an idea of the details that still need to be investigated, decisions that need to be taken, and missing constraints that need to be added. For example, what is allowed or not allowed in Australia? It is possible to have horizontal orientation outside of Quebec? What is the allowed variability across Europe or across North America? 
+
+
+```{.clafer .config}
+```
+
+```{.clafer .stats}
+```
+
+```{.clafer .links}
+```
+
+# Exercise 1
+
+In some jurisdictions, the lamps are of different shapes. 
+In general, the lamps are of `ball` shape.
+But in Quebec, for example, the red lamp is `square` and the yellow lamp is `diamond`.
+
+1. Extend the model to add the choices for the shape properties of the lamps.
+2. Add an optional clafer `allBalls` and write a constraint in its context restricting the shape of all lamps to be balls.
+3. Write a constraint `for vertical orientation, all lamps must be of shape ball`.
+
+After that compare your solution with one possible [Exercise 1 solution](). 
+Another [Exercise 1 solution using inheritance]().
+
+# Conclusion of Part I
+
+As you can see, the possible number of systems in our traffic lights domain is very large despite just have a few features. 
+Also, the model we have so far is quite incomplete. 
+
+Further extensive validation of the model with experts and further domain elicitation activities are needed. 
+Decisions need to be taken about which features and properties of the system are in our scope and will be implemented and which ones lie outside of the scope of our implementation.
+Having a model provides a basis for conducting these activities in an effective manner due to the ability to reason about it using instance generators.
+
+Every element in our model can be thought of a `feature` of our system. 
+Every feature comes is a set of requirements; these are system requirements as we have not yet distinguished hardware and software requirements.
+By selecting and eliminating the features, we can configure a particular variant of the system. 
+We can use the features to organize our development work of the system.
+
+Since we now have established and understood the extent of our domain and the requirements for our system, we can now move to Part II about domain concepts in control software.
+
+> Part II ![next](/next.png) [control software]()
+
+<hr>
+**Previous**
+<hr>
+
+1. [minimal traffic lights]()
+2. [adding variability]()
+3. [grouping choices]()
+4. [complex grouping and nesting]()
+5. [linking the jurisdiction and the system]()
+6. [nested constraints]()

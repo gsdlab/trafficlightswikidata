@@ -1,0 +1,39 @@
+In Clafer, abstract clafers are defined using a keyword `abstract`, which means that there will never be any direct instances of that clafer in a model.
+We can extract the common parts of every lamp into an abstraction as follows:
+
+```clafer
+abstract xor Lamp
+    on
+    off
+    flashing
+```
+
+then, we can **`inherit`** the properties and the `xor` constraint from the abstraction as follows:
+
+```clafer
+TrafficLight
+    red : Lamp
+    yellow : Lamp 
+    green : Lamp
+    leftGreenArrow : Lamp ?
+    rightGreenArrow : Lamp ?
+```
+
+The clafer `TrafficLight` is a `concrete` clafer, which is why we see instances generated for it in the configurator.
+The clafers for each lamp are also concrete and they only inherit properties from the abstract clafer `Lamp`. 
+
+This model change is a *refactoring*--change of structure without changing the semantics; 
+the set of instances of the model remains the same. 
+
+From now on, always use the `Alloy-based` instance generator.
+
+```{.clafer .config}
+```
+
+Now, let's analyze the ![next](/next.png) [valid states]() of a traffic light. 
+
+<hr>
+**Previous**
+<hr>
+
+1. [control software]()

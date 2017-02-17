@@ -1,0 +1,84 @@
+As we have seen, the domain knowledge was missing when we tried to constrain the state space using constraints. 
+What are the signals that a traffic light is supposed to communicate? 
+
+The basic signals are:
+
+- `proceed` - "you have the right of way and you may proceed"
+- `prepareToStop` - "you are about to loose the right of way, prepare to stop"
+- `stop` - "you don't have the right of way, stop and wait"
+- `warning` - "you may have the right of way, proceed with caution"
+
+The signals only in some variants are:
+
+- `allStop` - "all way stop", when `allWayFlashingRedAsStop`
+- `prepareToGo` - "you are about to get the right of way, prepare to go", when `redAndYellowToGreen`
+- `allYellow` - "traffic lights off on all ways, proceed with caution", when `allWayYellow`
+- `advancedLeft` - "you have the right of way left before the opposite direction", when `advancedOrExtendedLeft`
+- `extendedLeft` - "you have the right of way left after the opposite direction stopped", when `advancedOrExtendedLeft`
+
+Therefore, we can model the `TrafficSignals` as follows.
+The `xor` group indicates that a `TrafficLight` must be showing exactly one of the possible signals. 
+Also, we make some signals conditional on the system features by adding a constraint.
+
+
+```clafer
+xor TrafficSignals
+    proceed
+    prepareToStop
+    stop
+    warning
+    prepareToGo
+        [ redAndYellowToGreen ]
+    allStop
+        [ allWayFlashingRedAsStop  ]
+    allYellow
+        [ allWayYellow  ]
+    advancedLeft
+        [ advancedOrExtendedLeft  ]
+    extendedLeft
+        [ advancedOrExtendedLeft  ]
+```
+
+Now, selecting the system features will restrict the possible light signals.
+
+```clafer
+TrafficLightSystem
+    Lamps
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+      allWayYellow ?
+    or advancedOrExtendedLeft ?
+        greenFlashing
+        leftArrow
+```
+
+Let's try it out.
+Again, assert certain system features and see what signals are possible. 
+E.g., when you turn all features off:
+
+```clafer
+[ no LeftGreenArrow ]
+[ no RightGreenArrow ]
+[ no redAndYellowToGreen ]
+[ no allWayFlashingRedAsStop ]
+[ no allWayYellow ]
+[ no advancedOrExtendedLeft ]
+```
+
+```{.clafer .config}
+```
+
+Now that we have meaningful signals, we can express how they should be communicated using the lamps:
+![next](/next.png) [linking signals and lamps]().
+
+<hr>
+**Previous**
+<hr>
+
+1. [control software]()
+2. [lamp abstraction]()
+3. [valid states]()
+4. [add the missing constraints]()
+

@@ -1,0 +1,92 @@
+Given our choices of the various jurisdictions:
+
+```clafer
+xor Jurisdiction
+    Europe 
+        UK ?
+    mux NorthAmerica
+        USA
+        Canada
+    Australia
+    NewZealand
+```
+
+we can use `constraints` to restrict parts of the system.
+
+In Clafer, constraints are formulas of type Boolean and they can be arbitrary first-order logic formulas containing Boolean operators (and: `&&`, or: `||`, not: `!`, implication: `=>`, equivalence: `<=>`), set operators (equality `=`, union: `++` or `,`, subtraction: `--`, intersection: `&`)  and quantifiers (not exists: `no`, exactly one: `one`, exists: `some`, for all: `all`) extended with a few relational logic operators (relational join: `.`, domain restriction: `<:`, range restriction: `:>`).
+The constraint language also supports integers and integer formulas (operators: `+ - * / ^` and comparisons: `> >= < <= =`) and string literals (`"some text"`). Finally there is a set cardinality operator `#` to compute the size of the set and a ternary operator `if then else`. For details, see the [grammar](https://github.com/gsdlab/clafer/blob/develop/src/clafer.cf#L71..L120).
+
+Similarly to OCL, constraints are always declared in the **context** of some clafer, meaning that the constraint must hold for every instance of that clafer.  
+Unlike in OCL but similarly to Alloy, constraints always work on sets and relations, never on scalars---a scalar is a singleton set. 
+
+In our model, we'd like to say that certain jurisdictions require the presence of certain clafers in the instance.
+For example, in Europe, the green arrow lamps are used and that the lights are mounted in front of intersections. 
+We add the constraints as follows:
+
+```clafer
+[ some Europe => some LeftGreenArrow && some RightGreenArrow ]
+[ Jurisdiction.Europe => TrafficLightSystem.mountLocation.inFront ]
+[ NorthAmerica => behind ]
+```
+
+The constraints are expressed using square brackets `[ ]`.
+Each clafer is interpreted as a set and the default quantifier is `some`, which means `exists`.
+The first constraint, illustrates an implication `if there's an instance of Europe then there must be an instance of leftGreenArrow and an instance of rightGreenArrow`.
+The quantifier `some` can be omitted, as shown in the next two constraints.
+ 
+The second constraint, illustrates full qualification using the relational `join` oprerator `.`: 
+`Jurisdiction.Europe` is a set of instances of the clafer `Jurisdiction` joined with the relation `Europe` (a clafer semantically really is a relation but the join produces a set as in Alloy be ignoring the column on which the join is performed). 
+The Clafer compiler automatically adds the necessary qualification as long as a given clafer can be referenced unambiguously.
+This is why, in the first and the third constraint, the explicit qualification was dropped.
+
+> More information: [Tutorial: Constraints](https://github.com/gsdlab/clafer/wiki/Constraints)
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    xor mountLocation 
+        inFront
+        behind
+```
+
+Let's see what instances we will get now, assuming that we want to restrict the system to UK only. 
+We therefore add another constraint to require the presence of an instance of `UK` as our jurisdiction.
+
+```clafer
+[ UK ]
+```
+
+In the configurator, from the drop-down list in the window `Instance Generator`, select Alloy-based generator.
+After generating the instances, you can edit the model directly in the configurator. 
+
+- Enlarge the view `Input` using window size buttons ![window size buttons](/windowSizeControls.png).
+- Change the constraint `[UK]` to `[Canada]`.
+ 
+After each change, the model must be recompiled. 
+
+- Close the instance generator by pressing the button `Quit` (not needed for Alloy-based instance generator which supports automatic model reload).
+- Press the button `Compile` right above the text editor.
+- Generate the instances again by pressing `Get Instances`.
+
+```{.clafer .config}
+```
+
+The fact that we see only one instance for UK is good---it means the system is fully configured. 
+However, for Canada, we get four instances which means that the system is only partially specified---we still need to make decisions about the green arrows (e.g., `[ leftGreenArrow ]` and `[ no rightGreenArrow ]`). 
+An easy way to make and save decisions is to select or eliminate clafers in the matrix view and copy the corresponding constraints from the view `Constraints`.
+
+Let's look at some more differences across the jurisdictions: ![next](/next.png) [nested constraints]().
+
+<hr>
+**Previous**
+<hr>
+
+1. [minimal traffic lights]()
+2. [adding variability]()
+3. [grouping choices]()
+4. [complex grouping and nesting]()

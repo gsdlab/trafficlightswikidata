@@ -1,0 +1,139 @@
+```clafer
+TrafficLight
+    red : Lamp
+    yellow : Lamp 
+    green : Lamp
+    leftGreenArrow : Lamp ?
+        [ LeftGreenArrow ]
+        [ leftArrow ]        
+    rightGreenArrow : Lamp ?
+        [ RightGreenArrow ]
+    arrowsOff ?
+    [ arrowsOff <=> (no leftGreenArrow.on) && (no leftGreenArrow.flashing) ]
+    [ arrowsOff <=> (no rightGreenArrow.on) && (no rightGreenArrow.flashing) ]
+    emergencyVehicle ?
+```
+
+```clafer
+xor TrafficSignals
+    [ emergencyVehicle && allWayYellow => allYellow ]
+    [ emergencyVehicle && no allWayYellow => warning ]
+    proceed
+        [ no emergencyVehicle ]
+        [ red.off ]
+        [ yellow.off ]
+        [ green.on ]
+        [ leftGreenArrow => leftGreenArrow.on ]
+        [ rightGreenArrow => rightGreenArrow.on ]
+    prepareToStop
+        [ no emergencyVehicle ]
+        [ red.off ]
+        [ yellow.on ]
+        [ green.off ]
+        [ arrowsOff ]
+    stop
+        [ no emergencyVehicle ]
+        [ red.on ]
+        [ yellow.off ]
+        [ green.off ]
+        [ arrowsOff ]
+    warning
+        [ red.off ]
+        [ yellow.flashing ]
+        [ green.off ]
+        [ arrowsOff ]
+    prepareToGo
+        [ no emergencyVehicle ]
+        [ redAndYellowToGreen ]
+        [ red.on ]
+        [ yellow.on ]
+        [ green.off ]
+        [ arrowsOff ]
+    allStop
+        [ no emergencyVehicle ]
+        [ allWayFlashingRedAsStop  ]
+        [ red.flashing ]
+        [ yellow.off ]
+        [ green.off ]
+        [ arrowsOff ]
+    allYellow
+        [ allWayYellow  ]
+        [ red.off ]
+        [ yellow.flashing ]
+        [ green.off ]
+        [ arrowsOff ]
+    advancedLeft
+        [ no emergencyVehicle ]
+        [ advancedOrExtendedLeft  ]
+        [ red.on ]
+        [ yellow.off ]
+        [ greenFlashing => green.flashing ]
+        [ leftArrow => leftGreenArrow.flashing && green.off ]
+    extendedLeft
+        [ no emergencyVehicle ]
+        [ advancedOrExtendedLeft  ]
+        [ red.on ]
+        [ yellow.off ]
+        [ greenFlashing => green.flashing ]
+        [ leftArrow => leftGreenArrow.flashing && green.off ]
+```
+
+```clafer
+abstract xor Lamp
+    on
+    off
+    flashing
+```
+
+```clafer
+TrafficLightSystem
+    Lamps
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+    allWayYellow ?
+    xor advancedOrExtendedLeft ?
+        greenFlashing
+        leftArrow
+```
+
+Let's try it out.
+Again, assert certain signals and see what are the states of the lamps. 
+E.g., when you turn all features off and assume the presence or absence of an emergencyVehicle:
+
+```clafer
+[ no LeftGreenArrow ]
+[ no RightGreenArrow ]
+[ no redAndYellowToGreen ]
+[ no allWayFlashingRedAsStop ]
+[ no allWayYellow ]
+[ no advancedOrExtendedLeft ]
+
+[ emergencyVehicle ]
+```
+
+<table>
+<tr>
+<td>
+
+```{.clafer .config}
+```
+
+</td>
+<td>
+
+```{.clafer .ide}
+```
+
+</td>
+</tr>
+</table>
+
+```{.clafer .stats}
+```
+
+```{.clafer .links}
+```
+
+> Back to [linking signals and lamps](linking signals and lamps#conclusion-of-part-ii).

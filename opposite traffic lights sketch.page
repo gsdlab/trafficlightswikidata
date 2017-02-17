@@ -1,0 +1,24 @@
+A `reference clafer` is a clafer whose value is another clafer.
+
+We can define the `opposite` traffic light as follows
+
+```clafer
+abstract TrafficLight
+    opposite -> TrafficLight
+    xor signal 
+        stop 
+            [ opposite.signal.stop ]
+        proceed
+            [ opposite.signal.proceed ]
+
+EastWest : TrafficLight
+    [ opposite = WestEast ]
+
+WestEast  : TrafficLight
+    [ opposite = EastWest ]
+```
+
+```{.clafer .config}
+```
+
+> Back to the [conclusion of Part III](two traffic lights#conclusion-of-part-iii)
