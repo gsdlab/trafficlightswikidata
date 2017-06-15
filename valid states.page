@@ -77,7 +77,7 @@ redAndYellowToGreen ?
 ```{.clafer .config}
 ```
 
-In the window `Input`, add additional constraints to restrict the state space. 
+In the window `Input Clafer Model and Options`, add additional constraints to restrict the state space. 
 For example, 
 
 - what happens when we require `[ yellow.flashing ]`?
