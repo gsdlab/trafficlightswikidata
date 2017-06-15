@@ -39,7 +39,7 @@ Below, we move the constraint one level up (`C2`) and two levels up to make it a
 
 Note that in the constraint `C2`, the qualification with `this.` appeared. 
 In Clafer, `this` always refers to the current instance of the context clafer (in `C2`, `this` refers to the instance of `TrafficLightSystem2`).
-Often, `this.` can be omitted---the Clafer compiler inserts it automatically unless there is ambiguity.
+Often, `this.` can be omitted---the Clafer compiler inserts it automatically unless there is an ambiguity.
 
 This illustrates both the meaning of nested constraints and the usefulness of placing them in the context---well placed constraints often simplify the model as can be seen with `C1`.
 
