@@ -89,7 +89,7 @@ Another [Exercise 1 solution using inheritance]().
 
 # Conclusion of Part I
 
-As you can see, the possible number of systems in our traffic lights domain is very large despite just have a few features. 
+As you can see, the possible number of systems in our traffic lights domain is very large despite just having a few features. 
 Also, the model we have so far is quite incomplete. 
 
 Further extensive validation of the model with experts and further domain elicitation activities are needed. 
