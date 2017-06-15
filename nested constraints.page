@@ -55,8 +55,8 @@ Let's instantiate such model using the IDE:
 ```{.clafer .ide}
 ```
 
-Press the button `ClaferModel` in the window `Instance Generator`. 
 Why did that happen?
+Press the button `ClaferModel` in the window `Instance Generator`. 
 
 As we can see, the constraints on lines 12, 14, and 15 form an `UnSAT Core`, that is, as set of mutually contradicting constraints (line 12 is not marked due to the limitations of tooling).
 The instance generator removed the constraint `[ USA ]` and then it was able to generate an instance with `countdownTimer` but in another jurisdiction.
