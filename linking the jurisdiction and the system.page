@@ -20,7 +20,7 @@ Similarly to OCL, constraints are always declared in the **context** of some cla
 Unlike in OCL but similarly to Alloy, constraints always work on sets and relations, never on scalars---a scalar is a singleton set. 
 
 In our model, we'd like to say that certain jurisdictions require the presence of certain clafers in the instance.
-For example, in Europe, the green arrow lamps are used and that the lights are mounted in front of intersections. 
+For example, in Europe, the green arrow lamps are used and the lights are mounted in front of intersections. 
 We add the constraints as follows:
 
 ```clafer
