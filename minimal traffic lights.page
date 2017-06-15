@@ -23,7 +23,7 @@ A clafer instance can exist only when its parent clafer's instance exists (e.g.,
 In our model, we use `1..1` and a shorthand `1` to indicate `mandatory` clafers, that is, clafers which must exist in every instance of the model as long as their parent exists. 
 For `green`, we do not specify any cardinality since mandatory is the default cardinality and therefore it can be omitted.
 
-What are the `model instances`? In our case, we can interpret our `model` as a description of variability across all jurisdictions, whereas the instances of our model will correspond to a particular variant of the system for a given jurisdiction. Since all clafers in our model are mandatory, there is only a single instance of our model (i.e., there is actually no variability yet). 
+What are the `model instances`? In our case, we can interpret our `model` as a description of commonalities and variability across all jurisdictions, whereas the instances of our model will correspond to a particular variant of the system for a given jurisdiction. Since all clafers in our model are mandatory, there is only a single instance of our model (i.e., there is actually no variability yet). 
 
 Let's use the tool `ClaferIDE` to generate the instance.
 
