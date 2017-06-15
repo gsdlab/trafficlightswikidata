@@ -1,3 +1,18 @@
+So far we modeled the traffic light system as follows:
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    xor mountLocation 
+        inFront
+        behind
+```
+
 Given our choices of the various jurisdictions:
 
 ```clafer
@@ -40,19 +55,6 @@ The Clafer compiler automatically adds the necessary qualification as long as a 
 This is why, in the first and the third constraint, the explicit qualification was dropped.
 
 > More information: [Tutorial: Constraints](https://github.com/gsdlab/clafer/wiki/Constraints)
-
-```clafer
-TrafficLightSystem
-    Lamps
-        Red
-        Yellow
-        Green
-        LeftGreenArrow ?
-        RightGreenArrow ?
-    xor mountLocation 
-        inFront
-        behind
-```
 
 Let's see what instances we will get now, assuming that we want to restrict the system to UK only. 
 We therefore add another constraint to require the presence of an instance of `UK` as our jurisdiction.
