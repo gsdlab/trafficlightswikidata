@@ -39,8 +39,7 @@ Let's use another tool, `ClaferConfigurator`, to generate all instances.
 ```{.clafer .config}
 ```
 
-Press the button to open the model from this page in the configurator and press the button `Run` in the `Instance Generator` window - it will try to generate 10 instances. 
-The green tick ![green tick](/tick.png) indicates the presence of a clafer in a given instance, the red crossed circle ![red crossed circle](/no.png) its absence. 
+Press the button to open the model from this page in the configurator and press the button `Run` in the `Instance Generator` window - it will try to generate 10 instances. The `Feature and Quality Matrix` window lists 4 different instances. The green tick ![green tick](/tick.png) indicates the presence of a clafer in a given instance, the red crossed circle ![red crossed circle](/no.png) its absence. 
 All mandatory clafers are also present in every instance as indicated by gray rows.
 
 Note that, in general, making a clafer mandatory does not guarantee that it will be present in all instances, since it can be a child of an optional clafer. 
