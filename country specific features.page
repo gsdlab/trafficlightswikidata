@@ -97,7 +97,7 @@ Decisions need to be taken about which features and properties of the system are
 Having a model provides a basis for conducting these activities in an effective manner due to the ability to reason about it using instance generators.
 
 Every element in our model can be thought of a `feature` of our system. 
-Every feature comes is a set of requirements; these are system requirements as we have not yet distinguished hardware and software requirements.
+Every feature comes with a set of requirements; these are system requirements, as we have not yet distinguished hardware and software requirements.
 By selecting and eliminating the features, we can configure a particular variant of the system. 
 We can use the features to organize our development work of the system.
 
