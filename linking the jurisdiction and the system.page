@@ -66,7 +66,7 @@ We therefore add another constraint to require the presence of an instance of `U
 In the configurator, from the drop-down list in the window `Instance Generator`, select Alloy-based generator.
 After generating the instances, you can edit the model directly in the configurator. 
 
-- Enlarge the view `Input` using window size buttons ![window size buttons](/windowSizeControls.png).
+- Enlarge the view `Input Clafer Model and Options` using window size buttons ![window size buttons](/windowSizeControls.png).
 - Change the constraint `[UK]` to `[Canada]`.
  
 After each change, the model must be recompiled. 
