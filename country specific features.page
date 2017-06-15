@@ -32,7 +32,7 @@ TrafficLightSystem
         horizontal
 ```
 
-The constraint `C1` means that is `leftArrow` is to be used for indicating advanced or extended left, then `LeftGreenArrow` lamp type must be supported. 
+The constraint `C1` means that `leftArrow` is to be used for indicating advanced or extended left, then `LeftGreenArrow` lamp type must be supported. 
 It is the typical `requires` constraint, whereby one feature depends another.
 
 ```clafer
