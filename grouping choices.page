@@ -31,7 +31,7 @@ How many `model instances` are possible now?
 Let's use ClaferConfigurator to generate all instances. 
 
 As the number of model instances grows exponentially, viewing all of them all at once is not useful. 
-In configurator, you can filter the results by `selecting` and `eliminating` clafers, which it turn filters out the model instances which `don't have` or `do have` a given clafer, respectively. 
+In configurator, you can filter the results by `selecting` and `eliminating` clafers; it filters out the model instances which `don't have` or `do have` a given clafer, respectively. 
 
 - To only see instances which contain a given clafer, click the checkbox to the left of the clafer in the leftmost column.
 - To only see instances which do not contain a given clafer, double click the corresponding checkbox.
