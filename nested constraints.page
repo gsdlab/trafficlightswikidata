@@ -78,13 +78,13 @@ The remaining part of the model
 
 ```clafer
 xor Jurisdiction
-	Europe 
-		UK ?
-	mux NorthAmerica
-		USA
-		Canada
-	Australia
-	NewZealand
+    Europe 
+        UK ?
+    mux NorthAmerica
+        USA
+        Canada
+    Australia
+    NewZealand
 
 [ some Europe => some LeftGreenArrow && some RightGreenArrow ]
 [ Jurisdiction.Europe => TrafficLightSystem.mountLocation.inFront ]
