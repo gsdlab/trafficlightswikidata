@@ -4,7 +4,7 @@ title: "Traffic Lights" Domain Model Example
 toc: false
 ...
 
-Part of [Domain-Specific Modeling Theory and Practice Summer School 2014](http://msdl.cs.mcgill.ca/people/bart/dsm-tp-2014).
+Part of [Domain-Specific Modeling Theory and Practice Summer School 2014](http://msdl.cs.mcgill.ca/people/bart/dsm-tp-2014) and [Domain-Specific Modeling Theory and Practice Summer School 2017](http://msdl.cs.mcgill.ca/conferences/dsm-tp-2017).
 
 # Introduction
 Traffic Lights is a domain with a lot of variability across the different jurisdictions around the world. 
