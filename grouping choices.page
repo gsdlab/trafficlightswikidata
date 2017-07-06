@@ -15,9 +15,9 @@ TrafficLightSystem
         Green
         LeftGreenArrow ?
         RightGreenArrow ?
-	xor mountLocation 
-		inFront
-		behind
+        xor mountLocation 
+            inFront
+            behind
 ```
 
 The clafer `mountLocation` itself is a mandatory property of the system and therefore the group constraint `xor` will always be enforced:
