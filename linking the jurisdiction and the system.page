@@ -63,7 +63,7 @@ We therefore add another constraint to require the presence of an instance of `U
 [ UK ]
 ```
 
-In the configurator, from the drop-down list in the window `Instance Generator`, select Alloy-based generator.
+<!---In the configurator, from the drop-down list in the window `Instance Generator`, select Alloy-based generator.-->
 After generating the instances, you can edit the model directly in the configurator. 
 
 - Enlarge the view `Input Clafer Model and Options` using window size buttons ![window size buttons](/windowSizeControls.png).
@@ -71,7 +71,7 @@ After generating the instances, you can edit the model directly in the configura
  
 After each change, the model must be recompiled. 
 
-- Close the instance generator by pressing the button `Quit` (not needed for Alloy-based instance generator which supports automatic model reload).
+- Close the instance generator by pressing the button `Quit`. <!---(not needed for Alloy-based instance generator which supports automatic model reload).-->
 - Press the button `Compile` right above the text editor.
 - Generate the instances again by pressing `Get Instances`.
 
