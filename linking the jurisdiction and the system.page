@@ -73,7 +73,7 @@ After each change, the model must be recompiled.
 
 - Close the instance generator by pressing the button `Quit`. <!---(not needed for Alloy-based instance generator which supports automatic model reload).-->
 - Press the button `Compile` right above the text editor.
-- Generate the instances again by pressing `Get Instances`.
+- Generate the instances again by pressing `Run`.
 
 ```{.clafer .config}
 ```
