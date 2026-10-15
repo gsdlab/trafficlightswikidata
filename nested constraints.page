@@ -1,0 +1,92 @@
+Previously, we expressed the fact that certain jurisdictions require certain properties of the system. 
+We wrote three top-level constraints.
+However, sometimes certain properties are prohibited or only available in certain jurisdictions. 
+It is often convenient to specify constraints directly in the context of clafers which are relevant.
+Here, we specify that countdown timers are not allowed in the USA.
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    xor mountLocation 
+        inFront
+        behind
+    countdownTimer ?
+        [ no USA ]  // C1
+```
+
+We added a new optional clafer `countdownTimer` and specified a constraint (`C1`) in its context `[ no USA ]`.
+Similarly to OCL, in Clafer, a nested constraint must hold for every instance of its context clafer. 
+Therefore, every nested constraint can be always moved up in the clafer hierarchy, but we need to use universal quantification.
+Below, we move the constraint one level up (`C2`) and two levels up to make it a top-level constraint (`C3`):
+
+<div class="code">
+<span class="claferDecl" >TrafficLightSystem2</span>
+  <div class="indent">
+  <span class="claferDecl" >countdownTimer</span> ?</div>
+  <div class="indent">
+  <span class="keyword">[</span> all ct<span class="keyword"> : </span><a href="#this"><span class="reference">this</span></a>.<a href="#c1_countdownTimer"><span class="reference">countdownTimer</span></a> | <span class="keyword">no</span> <a href="#c0_USA"><span class="reference">USA</span></a> <span class="keyword">]</span><span class="inlinecomment">// C2</span>
+</div>
+
+<div>
+<span class="keyword">[</span> all ct<span class="keyword"> : </span><a href="#c0_TrafficLightSystem2"><span class="reference">TrafficLightSystem2</span></a>.<a href="#c1_countdownTimer"><span class="reference">countdownTimer</span></a> | <span class="keyword">no</span> <a href="#c0_USA"><span class="reference">USA</span></a> <span class="keyword">]</span><span class="inlinecomment">// C3</span>
+</div>
+</div>
+
+Note that in the constraint `C2`, the qualification with `this.` appeared. 
+In Clafer, `this` always refers to the current instance of the context clafer (in `C2`, `this` refers to the instance of `TrafficLightSystem2`).
+Often, `this.` can be omitted---the Clafer compiler inserts it automatically unless there is an ambiguity.
+
+This illustrates both the meaning of nested constraints and the usefulness of placing them in the context---well placed constraints often simplify the model as can be seen with `C1`.
+
+Now, let's say that we want a system for USA which does have countdown timers.
+
+```clafer
+[ USA ]
+[ countdownTimer ]
+```
+
+Let's instantiate such model using the IDE:
+
+```{.clafer .ide}
+```
+
+Why did that happen?
+Press the button `ClaferModel` in the window `Instance Generator`. 
+
+As we can see, the constraints on lines 12, 14, and 15 form an `UnSAT Core`, that is, as set of mutually contradicting constraints (line 12 is not marked due to the limitations of tooling).
+The instance generator removed the constraint `[ USA ]` and then it was able to generate an instance with `countdownTimer` but in another jurisdiction.
+
+Let's further extend our example by adding more ![next](/next.png) [country specific features](). 
+
+<hr>
+**Previous**
+<hr>
+
+1. [minimal traffic lights]()
+2. [adding variability]()
+3. [grouping choices]()
+4. [complex grouping and nesting]()
+5. [linking the jurisdiction and the system]()
+
+<hr>
+The remaining part of the model
+
+```clafer
+xor Jurisdiction
+    Europe 
+        UK ?
+    mux NorthAmerica
+        USA
+        Canada
+    Australia
+    NewZealand
+
+[ some Europe => some LeftGreenArrow && some RightGreenArrow ]
+[ Jurisdiction.Europe => TrafficLightSystem.mountLocation.inFront ]
+[ NorthAmerica => behind ]
+```

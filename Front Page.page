@@ -1,0 +1,60 @@
+---
+format: Markdown
+title: "Traffic Lights" Domain Model Example 
+toc: false
+...
+
+Part of [Domain-Specific Modeling Theory and Practice Summer School 2014](http://msdl.cs.mcgill.ca/people/bart/dsm-tp-2014) and [Domain-Specific Modeling Theory and Practice Summer School 2017](http://msdl.cs.mcgill.ca/conferences/dsm-tp-2017).
+
+# Introduction
+Traffic Lights is a domain with a lot of variability across the different jurisdictions around the world. 
+In this wiki, we are gradually building a variability model of this domain using a modeling language 
+
+[ ![Clafer logo](http://t3-necsis.cs.uwaterloo.ca:8091/img/logo.png) ](http://clafer.org)
+
+We explain the modeling language and the supporting tools along the way.
+
+This material is based on Wikipedia [Traffic Light](http://en.wikipedia.org/wiki/Traffic_light) and [Traffic Light Variations](http://en.wikipedia.org/wiki/List_of_variations_in_traffic_light_signalling_and_operation) articles. 
+The content is prepared by Michał Antkiewicz [email](mailto:mantkiew@gsd.uwaterloo.ca), [home](http://gsd.uwaterloo.ca/mantkiew).
+
+You can always return to this front page by clicking on the traffic lights logo in the top-left corner.
+
+Part 0: Introduction to Domain Engineering
+------------------------------------------
+
+[Slide show 2014](/2014.08.23-Antkiewicz-Intro-to-domain-engineering.ppsx)
+
+[Slide show 2017](/2017-dsmtp-kbak.pdf)
+
+Part I: Feature-Oriented Domain Analysis and Modeling
+-----------------------------------------------------
+
+In this part, we look at traffic lights systems around the world and model their system features. 
+
+1. [minimal traffic lights]()
+2. [adding variability]()
+3. [grouping choices]()
+4. [complex grouping and nesting]()
+5. [linking the jurisdiction and the system]()
+6. [nested constraints]()
+7. [country specific features]()
+
+Part II: Domain Concept Modeling
+--------------------------------
+
+In this part, we focus on modeling domain concepts used in the control software of a traffic lights system.
+
+1. [control software]()
+2. [lamp abstraction]()
+3. [valid states]()
+4. [add the missing constraints]()
+5. [traffic light signals]()
+6. [linking signals and lamps]()
+
+Part III: Application Configuration
+-----------------------------------
+
+In this part, we focus on configuring a particular deployment of our traffic lights system
+
+1. [application configuration]()
+2. [two traffic lights]()

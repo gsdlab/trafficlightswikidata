@@ -1,0 +1,224 @@
+Now that we are done with an iteration of domain modeling, let's see how we can configure a particular application for a specific set of requirements.
+
+At the bottom of the page, we can see the complete model which combines final models from Parts I and II.
+
+As the first step, we need to choose a jurisdiction, let's say Canada except Quebec.
+
+```clafer
+[ Canada && no Quebec ]
+```
+
+By constraints propagation, this configures `advancedOrExtendedLeft` and `behind` features for us. 
+
+Since we're outside of Quebec, which requires `horizontal`, we still have a choice of `orientation`. 
+Let's choose `vertical` for our application.
+
+```clafer
+[ vertical ]
+```
+
+Next, we learn that in Canada `redAndYellowToGreen` and `allWayFlashingRedAsStop` are not used but `allWayYellow` is used.
+We could explicitly assert that but since it's a piece of knowledge we elicited during this application engineering, let's contribute it back and add a constraint back to our domain model. 
+
+```clafer
+[ Canada => no redAndYellowToGreen ]
+[ Canada => no allWayFlashingRedAsStop ]
+[ Canada => allWayYellow ]
+```
+
+Now, we move on to the particular requirements of our application. 
+
+We now have to make a choice for the type of `advancedOrExtendedLeft` we want: `leftArrow`. 
+Note that in a given jurisdiction, both options may be allowed; however, for a single application, at most one is allowed, which is why we must explicitly eliminate `greenFlashing`.
+
+```clafer
+[ leftArrow && no greenFlashing ]
+```
+
+Let's say that the dedicated right green arrow is not needed, so we eliminate it to reduce the cost.
+
+```clafer
+[ no RightGreenArrow ]
+```
+
+The last choice is the `countdownTimer`, which we don't need.
+
+```clafer
+[ no countdownTimer ]
+```
+
+Let's check the allowed states of our system in our application:
+
+<table>
+<tr>
+<td>
+
+```{.clafer .config}
+```
+
+</td>
+<td>
+
+```{.clafer .ide}
+```
+
+</td>
+</tr>
+</table>
+
+```{.clafer .stats}
+```
+
+```{.clafer .links}
+```
+
+We have now properly configured a single traffic light.
+Let's focus on an application scenario with two traffic lights in opposite directions: 
+![next](next.png) [two traffic lights]()
+
+Complete Model 
+==============
+
+Part I: Domain Features
+-----------------------
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    countdownTimer ?
+        [ no USA ]
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+    allWayYellow ?
+        [ no USA ]
+    or advancedOrExtendedLeft ?   
+        greenFlashing
+        leftArrow
+            [ LeftGreenArrow ]
+    xor mountLocation 
+        inFront
+        behind
+    xor orientation
+        vertical
+        horizontal
+```
+
+```clafer
+[ Europe => LeftGreenArrow && RightGreenArrow ]
+[ Europe => redAndYellowToGreen ]
+[ USA => allWayFlashingRedAsStop ]
+[ Canada => advancedOrExtendedLeft ]
+
+[ Europe => inFront ]
+[ NorthAmerica => behind ]
+
+[ Quebec => horizontal ]
+```
+
+```clafer
+xor Jurisdiction
+    Europe 
+        UK ?
+    mux NorthAmerica
+        USA
+        Canada
+            Quebec ?
+    Australia
+    NewZealand
+
+```
+
+
+Part II: Domain Concepts
+------------------------
+
+```clafer
+TrafficLight
+    red : Lamp
+    yellow : Lamp 
+    green : Lamp
+    leftGreenArrow : Lamp ?
+        [ LeftGreenArrow ]
+        [ leftArrow ]        
+    rightGreenArrow : Lamp ?
+        [ RightGreenArrow ]
+    arrowsOff ?
+    [ arrowsOff <=> (no leftGreenArrow.on) && (no leftGreenArrow.flashing) ]
+    [ arrowsOff <=> (no rightGreenArrow.on) && (no rightGreenArrow.flashing) ]
+    emergencyVehicle ?
+```
+
+```clafer
+xor TrafficSignals
+    [ emergencyVehicle => (if allWayYellow then (some allYellow) else (some warning)) ]
+    proceed
+        [ no emergencyVehicle ]
+        [ red.off ]
+        [ yellow.off ]
+        [ green.on ]
+        [ leftGreenArrow => leftGreenArrow.on ]
+        [ rightGreenArrow => rightGreenArrow.on ]
+    prepareToStop
+        [ no emergencyVehicle ]
+        [ red.off ]
+        [ yellow.on ]
+        [ green.off ]
+        [ arrowsOff ]
+    stop
+        [ no emergencyVehicle ]
+        [ red.on ]
+        [ yellow.off ]
+        [ green.off ]
+        [ arrowsOff ]
+    warning
+        [ red.off ]
+        [ yellow.flashing ]
+        [ green.off ]
+        [ arrowsOff ]
+    prepareToGo
+        [ no emergencyVehicle ]
+        [ redAndYellowToGreen ]
+        [ red.on ]
+        [ yellow.on ]
+        [ green.off ]
+        [ arrowsOff ]
+    allStop
+        [ no emergencyVehicle ]
+        [ allWayFlashingRedAsStop  ]
+        [ red.flashing ]
+        [ yellow.off ]
+        [ green.off ]
+        [ arrowsOff ]
+    allYellow
+        [ allWayYellow  ]
+        [ red.off ]
+        [ yellow.flashing ]
+        [ green.off ]
+        [ arrowsOff ]
+    advancedLeft
+        [ no emergencyVehicle ]
+        [ advancedOrExtendedLeft  ]
+        [ red.on ]
+        [ yellow.off ]
+        [ greenFlashing => green.flashing ]
+        [ leftArrow => leftGreenArrow.flashing && green.off ]
+    extendedLeft
+        [ no emergencyVehicle ]
+        [ advancedOrExtendedLeft  ]
+        [ red.on ]
+        [ yellow.off ]
+        [ greenFlashing => green.flashing ]
+        [ leftArrow => leftGreenArrow.flashing && green.off ]
+```
+
+```clafer
+abstract xor Lamp
+    on
+    off
+    flashing
+```

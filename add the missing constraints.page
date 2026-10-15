@@ -1,0 +1,92 @@
+During the exploration of the possible states we observed the following invalid states:
+
+- C7: when `[ yellow.flashing ]`, both `red` and `green` lamps can be `on`, which should not be allowed. 
+- C8: when `[ red.flashing ]`, both `yellow` and `green` lamps can be `on`, which should not be allowed
+- C9: when `[ green.flashing ]`, only `[ red.on || red.off]` should be allowed
+- C10: when `[ advancedOrExtendedLeft.leftSignalType.leftArrow ]` is used, `[green.flashing]` should not be allowed
+- C11: when `[ redAndYellowToGreen ]` is used, the only two lamps that can be `on` at the same time are `red` and `yellow`, otherwise, at most one light can be `on` or `flashing`.
+
+Let's specify the missing constraints and check the possible states again.
+
+```clafer
+abstract xor Lamp
+    on
+    off
+    flashing
+```
+
+```clafer
+[ ! (all l : Lamp | l.on) ] 
+[ ! (all l : Lamp | l.off) ]
+[ ! (all l : Lamp | l.flashing) ]
+[ lone l : Lamp | l.flashing ]
+```
+
+```clafer
+TrafficLight
+    red : Lamp
+    yellow : Lamp 
+    green : Lamp
+    [ ! (red.off && yellow.off && green.off) ]
+    [ red.on && yellow.on => redAndYellowToGreen ]
+    [ red.flashing => yellow.off && green.off ]  // (C7)
+    [ yellow.flashing => red.off && green.off ]  // (C8)
+    [ green.flashing => yellow.off ]  // (C9)
+    leftGreenArrow : Lamp ?
+        [ no this.off => yellow.off ]
+        [ no this.off => red.on || green.on ]
+    rightGreenArrow : Lamp ?
+        [ no this.off => yellow.off ]
+        [ no this.off => red.on || green.on ]
+    [ advancedOrExtendedLeft.leftArrow => no green.flashing ] // (C10)
+    [ (lone l : Lamp | l.on) || (red.on && yellow.on && green.off => redAndYellowToGreen)]  // (C11)
+```
+
+The constraint C11 means that either at most one light is on at any given moment unless `redAndYellowToGreen` is used then both `red` and `yellow` can be `on` at the same time.
+
+Let's inspect the states assuming 
+
+```clafer
+[ leftArrow ]
+[ redAndYellowToGreen ]
+[ red.on ]
+[ green.on ]
+```
+
+We want to see whether it's still possible to have both `red` and `green` lamps `on` at the same time.
+
+```{.clafer .config}
+```
+
+As we can see, despite adding many constraints we still have not restricted the state space properly.
+Furthermore, the domain knowledge is completely lost in these constraints, as they do not correspond to what the traffic light should achieve.
+What we are missing, is that a traffic light is there to communicate a particular set of **signals**,
+which carry particular semantics.
+
+Let's add the ![next](/next.png) [traffic light signals]() which in turn determine the state of the lamps.
+
+<hr>
+**Previous**
+<hr>
+
+1. [control software]()
+2. [lamp abstraction]()
+3. [valid states]()
+
+<hr>
+Domain interface (for reference)
+<hr>
+<br>
+
+```clafer
+TrafficLightSystem
+    Lamps
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+    allWayYellow ?
+    or advancedOrExtendedLeft ?
+        greenFlashing
+        leftArrow
+```

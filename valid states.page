@@ -1,0 +1,97 @@
+Our current model allows many invalid states.
+Some of them are obvious, such as, when all lights are on or flashing, 
+others are more subtle and depend on particular variants, such as the green light cannot be flashing when the left green arrow is used.
+In Clafer, we can use the constraints to prohibit certain states or formulate state invariants.
+We cannot write temporal constraints or state transitions in the current version of the language (there's; however, ongoing work on the topic).
+
+Given our domain knowledge, let's first formulate which states are invalid:
+
+- C1: we cannot have all lamps `on`, `off`, or `flashing` at the same time.
+- C2: we cannot have more than one lamp `flashing` at a time
+- C3: we cannot have an arrow lamp `on` or `flashing` together with yellow `on` or `flashing`
+
+The following states are valid:
+
+- C4: we should always have one of the main lamps `on` or `flashing`
+- C5: we can have both `red` and `yellow` lamps `on` but only if `redAndYellowToGreen` feature is used
+- C6: we can only have an arrow lamp `on` or `flashing` together with `red` or `green` lamps `on`
+
+Let's now add these constraints and invariants to our model and see whether we can still get some invalid states.
+
+```clafer
+abstract xor Lamp
+    on
+    off
+    flashing
+
+// C1: we cannot have all lamps on, off, or flashing at the same time
+[ ! (all l : Lamp | l.on) ]
+[ ! (all l : Lamp | l.off) ]
+[ ! (all l : Lamp | l.flashing) ]
+
+// C2: we cannot have more than one lamp flashing at a time
+[ lone l : Lamp | l.flashing ]
+```
+
+The quantifier `lone` means `less than or equal to one` or `there exists at most one`.
+
+The remaining constraints must be specified in the context of the `TrafficLight`.
+
+```clafer
+TrafficLight
+    red : Lamp
+    yellow : Lamp 
+    green : Lamp
+
+    // C4: we should always have one of the main lamps on or flashing
+    // in other words: it's never the case that all main lamps are off
+    [ ! (red.off && yellow.off && green.off) ]
+
+    // C5: we can have both `red` and `yellow` lamps `on` but only if `redAndYellowToGreen` feature is used
+    // 
+    [ red.on && yellow.on => redAndYellowToGreen ]
+
+/* <br>
+C3: we cannot have an arrow lamp on or flashing together with yellow<br>
+C6: we can only have an arrow lamp `on` or `flashing` together with `red` or `green` lamps `on`<br>
+*/
+    leftGreenArrow : Lamp ?
+        // (C3) in other words: arrow lamp not off means yellow lamp must be off
+        [ no this.off => yellow.off ]
+        // (C6)
+        [ no this.off => red.on || green.on ] 
+    rightGreenArrow : Lamp ?
+        // (C3)
+        [ no this.off => yellow.off ]
+        // (C6) 
+        [ no this.off => red.on || green.on ] 
+```
+
+Let's inspect the states allowed by our constrained model assuming that `redAndYellowToGreen` is not chosen first.
+
+```clafer
+redAndYellowToGreen ?
+[ no redAndYellowToGreen ]
+```
+
+```{.clafer .config}
+```
+
+In the window `Input Clafer Model and Options`, add additional constraints to restrict the state space. 
+For example, 
+
+- what happens when we require `[ yellow.flashing ]`?
+- can we have both `[ red.on && green.on ]`?
+- what other cases you can think of? 
+
+Then change the constraint `[ no redAndYellowToGreen ]` to `[ redAndYellowToGreen ]` and see whether it is allowed to have both `[ red.on && yellow.on]`?
+
+As you can see, our model still allows many states which are not valid. 
+Let's ![next](/next.png) [add the missing constraints]().
+
+<hr>
+**Previous**
+<hr>
+
+1. [control software]()
+2. [lamp abstraction]()

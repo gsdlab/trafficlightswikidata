@@ -1,0 +1,263 @@
+How can we coordinate two traffic lights in a particular application?
+
+Let's consider the following deployment:
+
+![Two traffic light deployment](/twolightdeployment.png)
+
+So, we need two lights configured such that the east-west light has a left green arrow but the west-east light does not.
+
+To be able to do that, we need to make the `TrafficLight` into an abstraction and instantiate it twice with different options: 
+
+```clafer
+EastWest : TrafficLight
+    [ leftGreenArrow ]
+
+WestEast : TrafficLight
+    [ no leftGreenArrow ]
+```
+
+We group remaining options for the entire deployment:
+
+```clafer
+[ Canada && no Quebec ]
+[ vertical ]
+[ no RightGreenArrow ]
+[ no countdownTimer ]
+[ leftArrow && no greenFlashing ]
+```
+
+Here's the new version of the `TrafficLight` concept.
+
+Now, `TrafficLight` is an abstraction, which has it's own local lamps and signals. 
+
+```clafer
+abstract TrafficLight
+    red : Lamp
+    yellow : Lamp 
+    green : Lamp
+    leftGreenArrow : Lamp ?
+        [ LeftGreenArrow ]
+        [ leftArrow ]        
+    rightGreenArrow : Lamp ?
+        [ RightGreenArrow ]
+    arrowsOff ?
+    [ arrowsOff <=> (no leftGreenArrow.on) && (no leftGreenArrow.flashing) ]
+    [ arrowsOff <=> (no rightGreenArrow.on) && (no rightGreenArrow.flashing) ]
+    emergencyVehicle ?
+
+    xor TrafficSignals
+        [ emergencyVehicle => (if allWayYellow then (some allYellow) else (some warning)) ]
+        proceed
+            [ no emergencyVehicle ]
+            [ red.off ]
+            [ yellow.off ]
+            [ green.on ]
+            [ leftGreenArrow => leftGreenArrow.on ]
+            [ rightGreenArrow => rightGreenArrow.on ]
+        prepareToStop
+            [ no emergencyVehicle ]
+            [ red.off ]
+            [ yellow.on ]
+            [ green.off ]
+            [ arrowsOff ]
+        stop
+            [ no emergencyVehicle ]
+            [ red.on ]
+            [ yellow.off ]
+            [ green.off ]
+            [ arrowsOff ]
+        warning
+            [ red.off ]
+            [ yellow.flashing ]
+            [ green.off ]
+            [ arrowsOff ]
+        prepareToGo
+            [ no emergencyVehicle ]
+            [ redAndYellowToGreen ]
+            [ red.on ]
+            [ yellow.on ]
+            [ green.off ]
+            [ arrowsOff ]
+        allStop
+            [ no emergencyVehicle ]
+            [ allWayFlashingRedAsStop  ]
+            [ red.flashing ]
+            [ yellow.off ]
+            [ green.off ]
+            [ arrowsOff ]
+        allYellow
+            [ allWayYellow  ]
+            [ red.off ]
+            [ yellow.flashing ]
+            [ green.off ]
+            [ arrowsOff ]
+        advancedLeft
+            [ no emergencyVehicle ]
+            [ advancedOrExtendedLeft  ]
+            [ red.on ]
+            [ yellow.off ]
+            [ greenFlashing => green.flashing ]
+            [ leftArrow => leftGreenArrow.flashing && green.off ]
+        extendedLeft
+            [ no emergencyVehicle ]
+            [ advancedOrExtendedLeft  ]
+            [ red.on ]
+            [ yellow.off ]
+            [ greenFlashing => green.flashing ]
+            [ leftArrow => leftGreenArrow.flashing && green.off ]
+```
+
+How can we coordinate the traffic lights? 
+What are the rules?
+
+Simple traffic light coordination could be done by pairing the lights as **opposites**.
+From the point of view of `EastWest`, what should the opposite light show per signal in our particular application?
+
+- `proceed`: the same
+- `prepareToStop`: the same
+- `stop`: the same
+- `warning`: the same
+- `prepareToGo`: the same
+- `allStop`: the same
+- `allYellow`: the same
+- `advancedLeft`: `stop`
+- `extendedLeft`: `stop`
+
+We can express these using rules:
+
+```clafer
+[ EastWest.TrafficSignals.proceed <=> WestEast.TrafficSignals.proceed ]
+[ EastWest.TrafficSignals.prepareToStop <=> WestEast.TrafficSignals.prepareToStop]
+[ EastWest.TrafficSignals.stop <=> WestEast.TrafficSignals.stop ]
+[ EastWest.TrafficSignals.allStop <=> WestEast.TrafficSignals.allStop ]
+[ EastWest.TrafficSignals.allYellow <=> WestEast.TrafficSignals.allYellow ]
+[ EastWest.TrafficSignals.advancedLeft => WestEast.TrafficSignals.stop ]
+[ EastWest.TrafficSignals.extendedLeft => WestEast.TrafficSignals.stop ]
+```
+
+Let's check the allowed states of our system in our application:
+
+<table>
+<tr>
+<td>
+
+```{.clafer .config}
+```
+
+</td>
+<td>
+
+```{.clafer .ide}
+```
+
+</td>
+</tr>
+</table>
+
+```{.clafer .stats}
+```
+
+```{.clafer .links}
+```
+
+Exercise 3
+==========
+
+So far, we only covered the coordination of opposite lights in our concrete two-light deployment example. 
+The next step is to generalize these coordination rules to arbitrary deployments.
+The `opposite relationship` can be modeled using `reference clafers`.
+See [opposite traffic lights sketch]().
+Then the rules can be expressed using the `opposite` reference instead of the concrete `WestEast` or `EastWest` clafers.
+
+Model the opposite light coordination according to the sketch.
+
+Exercise 4
+==========
+
+In a general, we must also coordinate crossing lights. 
+
+![four-way intersection](/fourlightdeployment.png)
+
+Elicit and express the crossing lights coordination rules.
+First, express the rules on the concrete example.
+Next, similarly to the [opposite traffic lights sketch](), generalize the rules.
+
+Conclusion of Part III
+======================
+
+In this part, we configured an example two light application and formulated traffic lights coordination rules. 
+Now that the concepts and behavior of the individual traffic lights and various deployment configurations are understood, we can proceed towards the implementation.
+
+This concludes the tutorial. 
+
+> Back to [Front Page]().
+
+Complete Model 
+==============
+
+Part I: Domain Features
+-----------------------
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    countdownTimer ?
+        [ no USA ]
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+    allWayYellow ?
+        [ no USA ]
+    or advancedOrExtendedLeft ?   
+        greenFlashing
+        leftArrow
+            [ LeftGreenArrow ]
+    xor mountLocation 
+        inFront
+        behind
+    xor orientation
+        vertical
+        horizontal
+```
+
+```clafer
+[ Europe => LeftGreenArrow && RightGreenArrow ]
+[ Europe => redAndYellowToGreen ]
+[ USA => allWayFlashingRedAsStop ]
+[ Canada => advancedOrExtendedLeft ]
+[ Canada => no redAndYellowToGreen ]
+[ Canada => no allWayFlashingRedAsStop ]
+[ Canada => allWayYellow ]
+
+[ Europe => inFront ]
+[ NorthAmerica => behind ]
+
+[ Quebec => horizontal ]
+```
+
+```clafer
+xor Jurisdiction
+    Europe 
+        UK ?
+    mux NorthAmerica
+        USA
+        Canada
+            Quebec ?
+    Australia
+    NewZealand
+```
+
+
+Part II: Domain Concepts
+------------------------
+
+```clafer
+abstract xor Lamp
+    on
+    off
+    flashing
+```

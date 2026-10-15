@@ -1,0 +1,53 @@
+What are the other kinds of lamps allowed in some jurisdictions? Some countries use special green arrow lamps to allow traffic to turn left or right when the traffic in opposite direction is stopped (the so called `advanced left turn` before their green or `extended left turn` after their red). 
+
+We can model a system which has both types of green arrow lamps:
+
+
+```
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow
+        RightGreenArrow
+```
+
+
+but we'd like to also allow instances of the system which do not have the arrow lamps. 
+For that purpose, we use clafer cardinality to specify that the arrow lamps are optional, that is, either `0` or `1` instances of the arrow lamp are allowed. 
+We rewrite our model as follows:
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow 0..1
+        RightGreenArrow ?
+```
+
+The symbol `?` is a handy notation for `0..1` cardinality and we will use it from now onwards.
+
+> More information: [Tutorial: Cardinality](https://github.com/gsdlab/clafer/wiki/Cardinality)
+
+How many `model instances` are possible now? 
+
+Let's use another tool, `ClaferConfigurator`, to generate all instances.
+
+```{.clafer .config}
+```
+
+Press the button to open the model from this page in the configurator and press the button `Run` in the `Instance Generator` window - it will try to generate 10 instances. The `Feature and Quality Matrix` window lists 4 different instances. All mandatory clafers are present in every instance, as indicated by gray rows. For optional clafers, the green tick ![green tick](/tick.png) indicates the presence of a clafer in a given instance, the red crossed circle ![red crossed circle](/no.png) its absence. 
+
+Note that, in general, making a clafer mandatory does not guarantee that it will be present in all instances, since it can be a child of an optional clafer. 
+We call clafers which are present in all possible instances `effectively mandatory`.
+
+Close the configurator and move to the page ![next](/next.png) [grouping choices]().
+
+<hr>
+**Previous**
+<hr>
+
+1. [minimal traffic lights]().

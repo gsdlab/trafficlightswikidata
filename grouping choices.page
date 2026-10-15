@@ -1,0 +1,52 @@
+What are the other properties of the traffic light systems that vary across different jurisdictions? 
+In Europe, for example, the lights are usually mounted in front of the intersections, whereas, in North America, they are mounted after intersections. We therefore have a decision point `mountLocation` for which there are two exclusive choices. We cannot model such choices using optional cardinality because one choice must exclude the other and optional clafers can be both present in an instance.  
+
+For such purposes, Clafer provides `group cardinality` which restricts how many children of a given clafer can be instantiated. 
+Group cardinality is specified before clafer's name and can be given by an interval `n..m` or a keyword. 
+In our case, we need the exclusive or group `1..1` (alternatively, can be specified using a keyword `xor`).
+
+Let's add the `mountLocation` to our model:
+
+```clafer
+TrafficLightSystem
+    Lamps
+        Red
+        Yellow
+        Green
+        LeftGreenArrow ?
+        RightGreenArrow ?
+        xor mountLocation 
+            inFront
+            behind
+```
+
+The clafer `mountLocation` itself is a mandatory property of the system and therefore the group constraint `xor` will always be enforced:
+every system will always have exactly one of `inFront` or `behind` clafers. 
+Having both of them or neither is not allowed.
+
+> More information: [Tutorial: Group Cardinalities](https://github.com/gsdlab/clafer/wiki/Group-Cardinality)
+
+How many `model instances` are possible now? 
+
+Let's use ClaferConfigurator to generate all instances. 
+
+As the number of model instances grows exponentially, viewing all of them all at once is not useful. 
+In configurator, you can filter the results by `selecting` and `eliminating` clafers; it filters out the model instances which `don't have` or `do have` a given clafer, respectively. 
+
+- To only see instances which contain a given clafer, click the checkbox to the left of the clafer in the leftmost column.
+- To only see instances which do not contain a given clafer, double click the corresponding checkbox.
+- To restore the original view, click the `Reset` button.
+
+The view `Constraints` lists your selections.
+
+```{.clafer .config}
+```
+
+Close the configurator and move to the page ![next](/next.png) [complex grouping and nesting]().
+
+<hr>
+**Previous**
+<hr>
+
+1. [minimal traffic lights]()
+2. [adding variability]()

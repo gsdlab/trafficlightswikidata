@@ -1,0 +1,35 @@
+---
+toc: false
+...
+
+Part I
+======
+
+Let's first focus on the commonality among the different traffic light systems around the world. Every system uses the basic three-color lamps: `Red`, `Yellow`, and `Green` to control the `right of way`. In Clafer, we first define a concrete, prototypical `TrafficLightSystem` and its properties as follows:
+
+```clafer
+TrafficLightSystem 1..1
+    Lamps 1
+        Red 1
+        Yellow 1
+        Green  // 1 is assumed by default and can be omitted
+```
+
+In a Clafer model, every line declares a new `clafer`, which represents a concept or a property. 
+The clafers are nested using indentation (`red` is a child clafer of `Lamps`). 
+Clafers are followed by `clafer cardinality`, which indicates the allowed number of their instances: 
+in general, the cardinality is an interval `n..m`, where `m` can be `*` to indicate infinity.
+A clafer instance can exist only when its parent clafer's instance exists (e.g., instance of `red` cannot exist without an instance of `Lamps`).
+In our model, we use `1..1` and a shorthand `1` to indicate `mandatory` clafers, that is, clafers which must exist in every instance of the model as long as their parent exists. 
+For `green`, we do not specify any cardinality since mandatory is the default cardinality and therefore it can be omitted.
+
+What are the `model instances`? In our case, we can interpret our `model` as a description of commonalities and variability across all jurisdictions, whereas the instances of our model will correspond to a particular variant of the system for a given jurisdiction. Since all clafers in our model are mandatory, there is only a single instance of our model (i.e., there is actually no variability yet). 
+
+Let's use the tool `ClaferIDE` to generate the instance.
+
+```{.clafer .ide}
+```
+
+Press the button to open the model from this page in the IDE and press the button `Run` in the `Instance Generator` window. Then press the button `Next` to generate another instance and see what happens.
+
+Close the IDE and move to the page ![next](/next.png) [adding variability]().

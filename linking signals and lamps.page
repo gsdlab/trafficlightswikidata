@@ -1,0 +1,170 @@
+We first add our `TrafficLight` back.
+Since the green arrows are an optional component, we want to have an easy way of asserting that they are either not present or off without going into too much logic. 
+Currently, in Clafer, one cannot define custom constraints but one can define an optional clafer and make it equivalent to a set of constraints. 
+That's the trick we do with `arrowsOff`, which asserts that the arrows are neither `on` or `flashing`, which is also true when the arrows are not present.
+
+```clafer
+TrafficLight
+    red : Lamp
+    yellow : Lamp 
+    green : Lamp
+    leftGreenArrow : Lamp ?
+        [ LeftGreenArrow ]
+        [ leftArrow ]        
+    rightGreenArrow : Lamp ?
+        [ RightGreenArrow ]
+    arrowsOff ?
+    [ arrowsOff <=> (no leftGreenArrow.on) && (no leftGreenArrow.flashing) ]
+    [ arrowsOff <=> (no rightGreenArrow.on) && (no rightGreenArrow.flashing) ]
+```
+
+As for our `TrafficSignals`, we can now exactly define in what state the lamps should be.
+Most of the time, it's very straightforward (compared to our previous attempt using constraints); however, there are some variations depending on the system features.
+
+- in `proceed`, we turn the green arrows on, only if they are present
+- in `advancedLeft` and `extendedLeft`, we either have `green.flashing` or `leftGreenArrow.flashing` depending on the system feature variant `greenFlashing` or `leftArrow`.
+
+Also, we often assert `arrowsOff`, which is very convenient and we don't have to duplicate the complex constraints.
+
+```clafer
+xor TrafficSignals
+    proceed
+        [ red.off ]
+        [ yellow.off ]
+        [ green.on ]
+        [ leftGreenArrow => leftGreenArrow.on ]
+        [ rightGreenArrow => rightGreenArrow.on ]
+    prepareToStop
+        [ red.off ]
+        [ yellow.on ]
+        [ green.off ]
+        [ arrowsOff ]
+    stop
+        [ red.on ]
+        [ yellow.off ]
+        [ green.off ]
+        [ arrowsOff ]
+    warning
+        [ red.off ]
+        [ yellow.flashing ]
+        [ green.off ]
+        [ arrowsOff ]
+    prepareToGo
+        [ redAndYellowToGreen ]
+        [ red.on ]
+        [ yellow.on ]
+        [ green.off ]
+        [ arrowsOff ]
+    allStop
+        [ allWayFlashingRedAsStop  ]
+        [ red.flashing ]
+        [ yellow.off ]
+        [ green.off ]
+        [ arrowsOff ]
+    allYellow
+        [ allWayYellow  ]
+        [ red.off ]
+        [ yellow.flashing ]
+        [ green.off ]
+        [ arrowsOff ]
+    advancedLeft
+        [ advancedOrExtendedLeft  ]
+        [ red.on ]
+        [ yellow.off ]
+        [ greenFlashing => green.flashing ]
+        [ leftArrow => leftGreenArrow.flashing && green.off ]
+    extendedLeft
+        [ advancedOrExtendedLeft  ]
+        [ red.on ]
+        [ yellow.off ]
+        [ greenFlashing => green.flashing ]
+        [ leftArrow => leftGreenArrow.flashing && green.off ]
+```
+
+```clafer
+abstract xor Lamp
+    on
+    off
+    flashing
+```
+
+```clafer
+TrafficLightSystem
+    Lamps
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+      allWayYellow ?
+    xor advancedOrExtendedLeft ?
+        greenFlashing
+        leftArrow
+```
+
+Let's try it out.
+Again, assert certain signals and see what are the states of the lamps. 
+E.g., when you turn all features off and require `[ red.on ]`:
+
+```clafer
+[ no LeftGreenArrow ]
+[ no RightGreenArrow ]
+[ no redAndYellowToGreen ]
+[ no allWayFlashingRedAsStop ]
+[ no allWayYellow ]
+[ no advancedOrExtendedLeft ]
+
+[ red.on ]
+```
+
+<table>
+<tr>
+<td>
+
+```{.clafer .config}
+```
+
+</td>
+<td>
+
+```{.clafer .ide}
+```
+
+</td>
+</tr>
+</table>
+
+```{.clafer .stats}
+```
+
+```{.clafer .links}
+```
+
+Exercise 2
+==========
+
+The lamps are the so called **actuators**, they allow the system affect the environment. 
+In general, the system may also have to sense the state of the environment and change it's behavior accordingly.
+For example, a traffic light may have a **sensor** to read the transponder signals of privileged emergency vehicles, such as, police, firetruck, or medical services.
+
+Add a clafer `emergencyVehicle` to represent the state of the sensor indicating an emergency vehicle approaching and immediately switch to the `allYellow` if allowed or to `warning` signal otherwise.
+
+After that compare your solution with one possible [Exercise 2 solution](). 
+
+Conclusion of Part II
+=====================
+
+We now, finally, we have a meaningful model of domain concepts for control software with traffic signals controlling the traffic light lamps and supporting all variations of the system features.
+
+Let's see how we can now configure a particular traffic light application.
+
+> Part III: ![next](next.png) [application configuration]()
+
+<hr>
+**Previous**
+<hr>
+
+1. [control software]()
+2. [lamp abstraction]()
+3. [valid states]()
+4. [add the missing constraints]()
+5. [traffic light signals]()

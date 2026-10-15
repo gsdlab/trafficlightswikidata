@@ -1,0 +1,93 @@
+---
+toc: false
+...
+
+Part II
+=======
+
+After finishing the initial domain analysis, we can move to considering how do these variations impact the control software of a traffic light. 
+Let's first extract the features relevant to the control software from the [last version of our domain model](/country specific features).
+We can remove the jurisdictions, constraints, and physical properties `mountLocation` and `orientation`, since they do not impact the control software in any way. 
+We also remove `red`, `yellow`, and `green` because they are mandatory and `countdownTimer` as it won't be considered in this part.
+
+```
+TrafficLightSystem
+    Lamps
+        LeftGreenArrow ?
+        RightGreenArrow ?
+    redAndYellowToGreen ?
+    allWayFlashingRedAsStop ?
+    allWayYellow ?
+    or advancedOrExtendedLeft ?
+        greenFlashing
+        leftArrow
+```
+
+Consider the above simplified model as the **`interface`** between the domain model and the control software.
+The presence or absence of these features will be decided at the domain level but our control software must handle all possible decisions. 
+This interface model describes all variability from the control software point of view.
+
+From our domain analysis, we learned that all kinds of lamps, including the arrow lamps, can be in three states: `on`, `off`, and `flashing`. 
+Let's focus first on a single traffic light. 
+The images below show different traffic light configurations with all lamps turned on
+
+<table>
+<tr>
+<td>
+
+![a) main lamps only](allLampsOnMainLampsOnly.png)
+
+</td>
+<td>
+
+![b) main and left arrow only](allLampsOnLeftArrowOnly.png)
+
+</td>
+<td>
+
+![c) main and right arrow only](allLampsOnRightArrowOnly.png)
+
+</td>
+<td>
+
+![d) all lamps, including both arrows](allLampsOn.png)
+
+</td>
+</tr>
+<caption>Table 1: Allowed configurations of lamps of a traffic light</caption>
+</table>
+
+We can model the states of such a traffic light as follows:
+
+```clafer
+TrafficLight
+    xor red 
+        on
+        off
+        flashing
+    xor yellow
+        on
+        off
+        flashing
+    xor green
+        on
+        off
+        flashing
+    xor leftGreenArrow ?
+        on
+        off
+        flashing
+    xor rightGreenArrow ?
+        on
+        off
+        flashing
+```
+
+We can see all possible combinations of states in the configurator.
+
+```{.clafer .config}
+```
+
+Given so much repetition in the model, it would be nice to introduce an abstraction of a lamp.
+In Clafer, we can use inheritance for that purpose.
+Let's pull up the ![next](/next.png) [lamp abstraction]().
